@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./lib",
+        "target": "ESNext",
+        "module": "NodeNext",
+        "strict": true
+    },
+    "files": ["./src/index.ts", "./src/build.ts"]
+}
