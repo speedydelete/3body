@@ -17,7 +17,7 @@ const AU = 149597870700;
 const LY = 9.461e15;
 const SM = 1.9885e30;
 const SR = 695700000;
-const FLYING_STAR_DISTANCE = AU * 4;
+const FLYING_STAR_DISTANCE = AU * 3;
 
 function randomDistance(scale: number): number {
     return Math.random() * scale - (scale / 2);
@@ -29,7 +29,7 @@ function randomPositionVector(): Vector3 {
 }
 
 function randomSpeed(): number {
-    return Math.random() * 60000 - 30000;
+    return Math.random() * 30000 - 15000;
 }
 
 function randomVelocityVector(): Vector3 {
@@ -44,6 +44,7 @@ function createSimulation(): [Simulation, {trisolaris: Obj, sun1: Obj, sun2: Obj
         radius: 6371000,
         color: 0xffffff,
         temperature: 0,
+        bondAlbedo: 0.29,
     });
     let sun1 = new Obj({
         position: randomPositionVector(),
@@ -124,7 +125,7 @@ function createRenderedObjects(obj: Obj): [three.Mesh, three.Points] {
             map: obj === trisolaris ? textureLoader.load('https://raw.githubusercontent.com/speedydelete/space/refs/heads/main/dist/data/textures/ssc/earth_8k.jpg') : undefined,
             color: obj.isStar ? obj.color : undefined,
             emissive: obj.isStar ? obj.color : undefined,
-            emissiveIntensity: 2,
+            emissiveIntensity: 10,
         }),
     );
     if (obj.isStar) {
@@ -247,7 +248,7 @@ function getStatus(): string {
     } else {
         throw new Error(`Invalid number of flying stars: ${flyingStars}`);
     }
-    return `${fps} FPS\n${formatTime(sim.timeWarp)}/second\n${out}\n${flyingStars} flying star${flyingStars === 1 ? '' : 's'}\n${frozenFlyingStars} frozen flying star${frozenFlyingStars === 1 ? '' : 's'}\nDistances to stars: ${distances.sort((x, y) => x - y).map(formatLength).join(', ')}`;
+    return `${fps} FPS\n${formatTime(sim.timeWarp)}/second\n${out}\n${flyingStars} flying star${flyingStars === 1 ? '' : 's'}\n${frozenFlyingStars} frozen flying star${frozenFlyingStars === 1 ? '' : 's'}\nDistances to stars: ${distances.sort((x, y) => x - y).map(formatLength).join(', ')}\n${(sim.getTemperatureOf(trisolaris) - 273.15).toFixed(3)}°C`;
 }
 
 let blurred = false;

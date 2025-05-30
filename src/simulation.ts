@@ -138,11 +138,12 @@ export interface ObjParams {
     radius: number;
     color: number;
     temperature: number;
+    bondAlbedo?: number;
 }
 
 export class Obj {
 
-    static readonly SIZE: number = 41;
+    static readonly SIZE: number = 45;
 
     position: Vector3;
     velocity: Vector3;
@@ -151,6 +152,7 @@ export class Obj {
     radius: number;
     color: number;
     temperature: number;
+    bondAlbedo: number;
 
     constructor(options: ObjParams | ArrayBuffer) {
         if (options instanceof ArrayBuffer) {
@@ -162,6 +164,7 @@ export class Obj {
             this.radius = view.getFloat64(29);
             this.color = view.getFloat64(33);
             this.temperature = view.getFloat64(37);
+            this.bondAlbedo = view.getFloat64(41);
         } else {
             this.position = options.position;
             this.velocity = options.velocity;
@@ -170,6 +173,7 @@ export class Obj {
             this.radius = options.radius;
             this.color = options.color;
             this.temperature = options.temperature;
+            this.bondAlbedo = options.bondAlbedo ?? 0;
         }
     }
 
@@ -183,6 +187,7 @@ export class Obj {
         view.setFloat64(29, this.radius);
         view.setFloat64(33, this.color);
         view.setFloat64(37, this.temperature);
+        view.setFloat64(41, this.bondAlbedo);
         return buffer;
     }
     
@@ -263,6 +268,16 @@ export class Simulation {
 
             obj.position.add(obj.velocity.copy().mul(dt));
         }
+    }
+
+    getTemperatureOf(obj: Obj): number {
+        let S = 0;
+        for (let other of this.objs) {
+            if (other.isStar) {
+                S += other.luminosity / (4 * Math.PI * obj.distanceTo(other)**2);
+            }
+        }
+        return ((1 - obj.bondAlbedo) * S / (4 * SBC)) ** (1/4);
     }
 
 }
