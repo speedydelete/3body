@@ -1,7 +1,7 @@
 
 import * as three from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
-import {Vector3, Obj, Simulation} from './simulation.js';
+import {SM, SR, Vector3, Star, Planet, Obj, Simulation} from './simulation.js';
 
 
 function query<T extends HTMLElement>(query: string): T {
@@ -15,8 +15,6 @@ function query<T extends HTMLElement>(query: string): T {
 
 const AU = 149597870700;
 const LY = 9.461e15;
-const SM = 1.9885e30;
-const SR = 695700000;
 const FLYING_STAR_DISTANCE = AU * 3;
 
 function randomDistance(scale: number): number {
@@ -36,42 +34,32 @@ function randomVelocityVector(): Vector3 {
     return new Vector3(randomSpeed(), randomSpeed(), randomSpeed());
 }
 
-function createSimulation(): [Simulation, {trisolaris: Obj, sun1: Obj, sun2: Obj, sun3: Obj}] {
-    let trisolaris = new Obj({
+function createSimulation(): [Simulation, {trisolaris: Planet, sun1: Star, sun2: Star, sun3: Star}] {
+    let trisolaris = new Planet({
         position: randomPositionVector(),
         velocity: randomVelocityVector(),
         mass: 5.972168e24,
         radius: 6371000,
-        color: 0xffffff,
-        temperature: 0,
-        bondAlbedo: 0.29,
+        albedo: 0.29,
+        texture: 'https://raw.githubusercontent.com/speedydelete/space/refs/heads/main/dist/data/textures/ssc/earth_8k.jpg',
     });
-    let sun1 = new Obj({
+    let sun1 = new Star({
         position: randomPositionVector(),
         velocity: randomVelocityVector(),
-        isStar: true,
         mass: SM * 1.25,
         radius: SR * 1.359,
-        color: 0xf4f1ff,
-        temperature: 6350,
     });
-    let sun2 = new Obj({
+    let sun2 = new Star({
         position: randomPositionVector(),
         velocity: randomVelocityVector(),
-        isStar: true,
         mass: SM * 1.13,
         radius: SR * 1.167,
-        color: 0xfff7fc,
-        temperature: 6050,
     });
-    let sun3 = new Obj({
+    let sun3 = new Star({
         position: randomPositionVector(),
         velocity: randomVelocityVector(),
-        isStar: true,
         mass: SM * 0.9,
         radius: SR * 0.853,
-        color: 0xffefdd,
-        temperature: 5380,
     });
     return [new Simulation(trisolaris, sun1, sun2, sun3), {trisolaris, sun1, sun2, sun3}];
 }
@@ -113,61 +101,62 @@ controls.listenToKeyEvents(window);
 let scene = new three.Scene();
 scene.add(new three.AmbientLight(0xffffff, 0.1));
 
-let renderedObjects = new Map<Obj, [three.Mesh, three.Points]>();
+let planetMeshes = new Map<Planet, three.Mesh>();
+let starMeshesAndPoints = new Map<Star, [three.Mesh, three.Points]>();
 
 let textureLoader = new three.TextureLoader();
 
-function createRenderedObjects(obj: Obj): [three.Mesh, three.Points] {
+function createRenderedObjects(obj: Obj): void {
     let geometry = new three.SphereGeometry(obj.radius / unitSize, 512, 512);
-    let mesh = new three.Mesh(
-        geometry,
-        new three.MeshStandardMaterial({
-            map: obj === trisolaris ? textureLoader.load('https://raw.githubusercontent.com/speedydelete/space/refs/heads/main/dist/data/textures/ssc/earth_8k.jpg') : undefined,
-            color: obj.isStar ? obj.color : undefined,
-            emissive: obj.isStar ? obj.color : undefined,
-            emissiveIntensity: 10,
-        }),
-    );
-    if (obj.isStar) {
+    let material = new three.MeshStandardMaterial();
+    if (obj instanceof Star) {
+        let color = new three.Color(obj.color);
+        material.color = color;
+        material.emissive = color;
+        material.emissiveIntensity = 10;
+    } else {
+        material.map = textureLoader.load(obj.texture);
+    }
+    let mesh = new three.Mesh(geometry, material);
+    if (obj instanceof Star) {
         let light = new three.PointLight(obj.color);
         light.power = obj.luminosity * 93 / unitSize**2 / 20000;
         light.castShadow = true;
         mesh.add(light);
+        let points = new three.Points(
+            geometry,
+            new three.PointsMaterial({
+                color: new three.Color(obj.color),
+                size: 1,
+                sizeAttenuation: false,
+                depthTest: false,
+            }),
+        );
+        starMeshesAndPoints.set(obj, [mesh, points]);
+        scene.add(points);
+        points.visible = false;
+    } else {
+        planetMeshes.set(obj, mesh);
     }
-    let points = new three.Points(
-        geometry,
-        new three.PointsMaterial({
-            color: obj.color,
-            size: 1,
-            sizeAttenuation: false,
-            depthTest: false,
-        }),
-    );
     scene.add(mesh);
-    scene.add(points);
-    renderedObjects.set(obj, [mesh, points]);
     mesh.visible = true;
-    points.visible = false;
-    return [mesh, points];
 }
 
 sim.objs.forEach(createRenderedObjects);
 
+let trisolarisMesh = planetMeshes.get(trisolaris) ?? (() => {throw new Error('Trisolaris mesh is missing')})();
+
 function updateMeshes(): void {
-    for (let [obj, [mesh, points]] of renderedObjects) {
+    for (let [obj, [mesh, points]] of starMeshesAndPoints) {
         let vector: three.Vector3;
-        if (obj.isStar) {
-            if (trisolaris.distanceTo(obj) < FLYING_STAR_DISTANCE) {
-                mesh.visible = true;
-                points.visible = false;
-                vector = mesh.position;
-            } else {
-                mesh.visible = false;
-                points.visible = true;
-                vector = points.position;
-            }
-        } else {
+        if (trisolaris.distanceTo(obj) < FLYING_STAR_DISTANCE) {
+            mesh.visible = true;
+            points.visible = false;
             vector = mesh.position;
+        } else {
+            mesh.visible = false;
+            points.visible = true;
+            vector = points.position;
         }
         vector.set(obj.position.x / unitSize, obj.position.y / unitSize, obj.position.z / unitSize);
     }
@@ -281,15 +270,12 @@ function animate() {
     }
     updateMeshes();
     query('#left-info').textContent = getStatus();
-    let objs = renderedObjects.get(trisolaris);
-    if (objs) {
-        let [mesh] = objs;
-        camera.position.x += mesh.position.x - oldMeshPos.x;
-        camera.position.y += mesh.position.y - oldMeshPos.y;
-        camera.position.z += mesh.position.z - oldMeshPos.z;
-        controls.target.copy(mesh.position);
-        oldMeshPos.copy(mesh.position);
-    }
+    let pos = trisolarisMesh.position;
+    camera.position.x += pos.x - oldMeshPos.x;
+    camera.position.y += pos.y - oldMeshPos.y;
+    camera.position.z += pos.z - oldMeshPos.z;
+    controls.target.copy(pos);
+    oldMeshPos.copy(pos);
     camera.updateProjectionMatrix();
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
@@ -298,11 +284,8 @@ function animate() {
 window.addEventListener('load', () => {
     requestAnimationFrame(animate);
     setTimeout(() => {
-        let objs = renderedObjects.get(trisolaris);
-        if (objs) {
-            let mesh = objs[0];
-            camera.position.set(mesh.position.x + trisolaris.radius/unitSize*10, mesh.position.y, mesh.position.z);
-        }
+        let pos = trisolarisMesh.position;
+        camera.position.set(pos.x + trisolaris.radius/unitSize*10, pos.y, pos.z);
     }, 100);
 });
 
@@ -314,6 +297,8 @@ window.addEventListener('keydown', event => {
         sim.timeWarp /= 2;
     } else if (key === '/') {
         sim.timeWarp = 1;
-        event.preventDefault()
+        event.preventDefault();
     }
 });
+
+console.log(sun1.color.toString(16), sun2.color.toString(16), sun3.color.toString(16), sun1.temperature, sun2.temperature, sun3.temperature);

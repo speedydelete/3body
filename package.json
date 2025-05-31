@@ -13,12 +13,10 @@
     "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
     "@minify-html/node": "^0.16.4",
+    "@types/three": "^0.176.0",
     "babel-loader": "^10.0.0",
     "three": "^0.177.0",
     "typescript": "^5.8.3",
     "webpack": "^5.99.9"
-  },
-  "devDependencies": {
-    "@types/three": "^0.176.0"
   }
 }

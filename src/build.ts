@@ -20,7 +20,7 @@ let compiler = webpack({
     module: {
         rules: [
             {
-                test: /\.[jt]s$/,
+                test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',

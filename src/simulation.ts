@@ -1,6 +1,12 @@
 
-const G = 6.67430e-11;
-const SBC = 5.670374419e-8;
+// import colors from './colors.json';
+
+export const G = 6.67430e-11;
+export const SBC = 5.670374419e-8;
+
+export const SM = 1.9885e30;
+export const SR = 695700000;
+export const SL = 3.486e26;
 
 
 export class Vector3 {
@@ -133,112 +139,111 @@ export class Vector3 {
 export interface ObjParams {
     position: Vector3;
     velocity: Vector3;
-    isStar?: boolean;
     mass: number;
     radius: number;
-    color: number;
-    temperature: number;
-    bondAlbedo?: number;
 }
 
-export class Obj {
+export class BaseObj {
 
     static readonly SIZE: number = 45;
 
     position: Vector3;
     velocity: Vector3;
-    isStar: boolean;
     mass: number;
     radius: number;
-    color: number;
-    temperature: number;
-    bondAlbedo: number;
 
-    constructor(options: ObjParams | ArrayBuffer) {
-        if (options instanceof ArrayBuffer) {
-            this.position = new Vector3(options);
-            this.velocity = new Vector3(options.slice(12));
-            let view = new DataView(options);
-            this.isStar = Boolean(view.getUint8(24));
-            this.mass = view.getFloat64(25);
-            this.radius = view.getFloat64(29);
-            this.color = view.getFloat64(33);
-            this.temperature = view.getFloat64(37);
-            this.bondAlbedo = view.getFloat64(41);
-        } else {
-            this.position = options.position;
-            this.velocity = options.velocity;
-            this.isStar = options.isStar ?? false;
-            this.mass = options.mass;
-            this.radius = options.radius;
-            this.color = options.color;
-            this.temperature = options.temperature;
-            this.bondAlbedo = options.bondAlbedo ?? 0;
-        }
+    constructor(options: ObjParams) {
+        this.position = options.position;
+        this.velocity = options.velocity;
+        this.mass = options.mass;
+        this.radius = options.radius;
     }
 
-    export(buffer?: ArrayBuffer): ArrayBuffer {
-        buffer ??= new ArrayBuffer(Obj.SIZE);
-        this.position.export(buffer);
-        this.velocity.export(buffer.slice(12));
-        let view = new DataView(buffer);
-        view.setUint8(24, Number(this.isStar));
-        view.setFloat64(25, this.mass);
-        view.setFloat64(29, this.radius);
-        view.setFloat64(33, this.color);
-        view.setFloat64(37, this.temperature);
-        view.setFloat64(41, this.bondAlbedo);
-        return buffer;
-    }
-    
-    get luminosity(): number {
-        return SBC * (4 * Math.PI * this.radius**2) * this.temperature**4;
-    }
-
-    distanceTo(other: Obj): number {
+    distanceTo(other: BaseObj): number {
         return this.position.distanceTo(other.position);
     }
 
-    relativeVelocity(other: Obj): Vector3 {
+    relativeVelocity(other: BaseObj): Vector3 {
         return this.velocity.copy().sub(other.velocity);
     }
 
 }
 
 
+function clamp(value: number): number {
+    return Math.round(value < 0 ? 0 : (value > 255 ? 255 : value));
+}
+
+export class Star extends BaseObj {
+
+    get luminosity(): number {
+        let mass = this.mass / SM;
+        if (mass < 0.43) {
+            mass **= 2.3;
+        } else if (mass < 2) {
+            mass **= 4;
+        } else {
+            mass **= 3.5;
+        }
+        return SL * mass;
+    }
+
+    get temperature(): number {
+        return (this.luminosity / (4 * Math.PI * this.radius**2 * SBC))**(1/4);
+    }
+
+    get color(): number {
+        // https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html
+        let x = this.temperature / 100;
+        let r: number;
+        let g: number, b: number;
+        if (x < 66) {
+            r = 255;
+            g = clamp(99.4708025861 * Math.log(x) - 161.1195681661);
+            b = x <= 19 ? 0 : clamp(138.5177312231 * Math.log(x - 10) - 305.0447927307);
+        } else {
+            r = clamp(329.698727446 * (x - 60) ** -0.1332047592);
+            g = clamp(288.1221695283 * (x - 60) ** -0.0755148492);
+            b = 255;
+        }
+        g = clamp((g / 241) * 255);
+        b = clamp((b / 224) * 255);
+        return (r << 16) | (g << 8) | b;
+    }
+
+}
+
+
+export interface PlanetParams extends ObjParams {
+    texture: string;
+    albedo: number;
+}
+
+export class Planet extends BaseObj {
+
+    texture: string;
+    albedo: number;
+
+    constructor(params: PlanetParams) {
+        super(params);
+        this.texture = params.texture;
+        this.albedo = params.albedo;
+    }
+
+}
+
+
+export type Obj = Star | Planet;
+
+
 export class Simulation {
 
     time: number = 0;
     timeWarp: number = 1;
-    objs: Obj[] = [];
+    objs: Obj[];
 
-    constructor();
-    constructor(data: ArrayBuffer);
-    constructor(...objs: Obj[])
-    constructor(data?: ArrayBuffer | Obj, ...objs: Obj[]) {
-        if (data) {
-            if (data instanceof ArrayBuffer) {
-                let view = new DataView(data);
-                this.time = view.getFloat64(0);
-                for (let index = 4; index < data.byteLength; index += Obj.SIZE) {
-                    this.objs.push(new Obj(data.slice(index)));
-                }
-            } else {
-                this.objs.push(data, ...objs);
-            }
-        }
-    }
-
-    export(): ArrayBuffer {
-        let buffer = new ArrayBuffer(4 + this.objs.length * Obj.SIZE);
-        let view = new DataView(buffer);
-        view.setFloat64(0, this.time);
-        let index = 4;
-        for (let obj of this.objs) {
-            obj.export(buffer.slice(index));
-            index += Obj.SIZE;
-        }
-        return buffer;
+    constructor(...objs: Obj[]) {
+        this.objs = objs;
     }
 
     update(dt: number): void {
@@ -271,13 +276,17 @@ export class Simulation {
     }
 
     getTemperatureOf(obj: Obj): number {
-        let S = 0;
-        for (let other of this.objs) {
-            if (other.isStar) {
-                S += other.luminosity / (4 * Math.PI * obj.distanceTo(other)**2);
+        if (obj instanceof Star) {
+            return obj.temperature;
+        } else {
+            let S = 0;
+            for (let other of this.objs) {
+                if (other instanceof Star) {
+                    S += other.luminosity / (4 * Math.PI * obj.distanceTo(other)**2);
+                }
             }
+            return ((1 - obj.albedo) * S / (4 * SBC)) ** (1/4);
         }
-        return ((1 - obj.bondAlbedo) * S / (4 * SBC)) ** (1/4);
     }
 
 }
