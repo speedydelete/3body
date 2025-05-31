@@ -1,7 +1,7 @@
 
 import * as three from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
-import {SM, SR, Vector3, Star, Planet, Obj, Simulation} from './simulation.js';
+import {SM, SR, Vector3, Star, Planet, Obj, Simulation} from './sim/index.js';
 
 
 function query<T extends HTMLElement>(query: string): T {

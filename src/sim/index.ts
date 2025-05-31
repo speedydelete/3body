@@ -1,5 +1,4 @@
 
-// import colors from './colors.json';
 
 export const G = 6.67430e-11;
 export const SBC = 5.670374419e-8;
