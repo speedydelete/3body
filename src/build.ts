@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import minify from '@minify-html/node';
 import webpack from 'webpack';
 
+import './sim/element/gen.js';
+
 
 const mode = process.argv.includes('dev') ? 'development' : 'production';
 

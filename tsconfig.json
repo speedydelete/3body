@@ -6,5 +6,5 @@
         "module": "NodeNext",
         "strict": true
     },
-    "files": ["./src/index.ts", "./src/build.ts", "./src/sim/element.ts"]
+    "files": ["./src/index.ts", "./src/build.ts", "src/sim/element/gen.ts", "src/sim/element/index.ts"]
 }
