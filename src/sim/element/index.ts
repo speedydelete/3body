@@ -34,13 +34,13 @@ export class Element {
     isotopes: {[key: number]: IsotopeData};
     mass: number;
 
-    constructor(name: string, abbr: string, number: number, electronConfig: ElectronConfig, isotopes: {[key: number]: IsotopeData}) {
+    constructor(name: string, abbr: string, number: number, electronConfig: ElectronConfig, isotopes: {[key: number]: IsotopeData}, mass: number) {
         this.name = name;
         this.abbr = abbr;
         this.number = number;
         this.electronConfig = electronConfig;
         this.isotopes = isotopes;
-        this.mass = 0;
+        this.mass = mass;
         for (let isotope of Object.values(isotopes)) {
             this.mass += isotope.mass * (isotope.abundance ?? 0);
         }
@@ -134,9 +134,9 @@ const _elements = [
 
     element('Chlorine', 'Cl', 17, '[Ne] 3s2 3p5', {}),
 
-    element('Argon', 'Ar', 18, '[Ne] 3s2 3p6', {})
+    element('Argon', 'Ar', 18, '[Ne] 3s2 3p6', {}),
 
-    element('Potassium', 'K', 19, '[Ar] 4s1', {})
+    element('Potassium', 'K', 19, '[Ar] 4s1', {}),
 
     element('Calcium', 'Ca', 20, '[Ar] 4s2', {}),
 

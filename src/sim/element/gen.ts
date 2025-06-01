@@ -48,7 +48,9 @@ let result = babel.transformSync(code, {plugins: [
                         let args = path.node.arguments;
                         t.assertStringLiteral(args[3]);
                         t.assertObjectExpression(args[4]);
-                        let newArgs = [args[0], args[1], args[2], t.objectExpression(electronConfig(args[3].value)), t.objectExpression(args[4].properties.map(prop => {
+                        let mass = 0;
+                        let newArgs = [args[0], args[1], args[2], t.objectExpression(electronConfig(args[3].value))];
+                        newArgs.push(t.objectExpression(args[4].properties.map(prop => {
                             t.assertObjectProperty(prop);
                             t.assertArrayExpression(prop.value);
                             let args = prop.value.elements.slice();
@@ -57,22 +59,28 @@ let result = babel.transformSync(code, {plugins: [
                                 out.push(t.objectProperty(t.identifier('name'), args[0]));
                                 args.shift();
                             }
-                            assertNotSpreadElement(args[0]);
+                            t.assertNumericLiteral(args[0]);
                             out.push(t.objectProperty(t.identifier('mass'), args[0]));
                             assertNotSpreadElement(args[1]);
+                            let abundance = 0;
                             if (args[1]) {
-                                if (t.isStringLiteral(args[2])) {
+                                if (t.isArrayExpression(args[2])) {
                                     out.push(t.objectProperty(t.identifier('decay'), t.arrayExpression([args[1], args[2]])));
                                     if (args[3]) {
-                                        assertNotSpreadElement(args[3]);
+                                        t.assertNumericLiteral(args[3]);
+                                        abundance = args[3].value;
                                         out.push(t.objectProperty(t.identifier('abundance'), args[3]));
                                     }
                                 } else {
+                                    t.assertNumericLiteral(args[1]);
+                                    abundance = args[1].value;
                                     out.push(t.objectProperty(t.identifier('abundance'), args[1]));
                                 }
                             }
+                            mass += args[0].value * abundance;
                             return t.objectProperty(prop.key, t.objectExpression(out));
-                        }))];
+                        })));
+                        newArgs.push(t.numericLiteral(mass));
                         path.replaceWith(t.callExpression(
                             t.memberExpression(t.identifier('Object'), t.identifier('freeze')),
                             [t.newExpression(t.identifier('Element'), newArgs)],
