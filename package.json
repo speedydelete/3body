@@ -7,7 +7,7 @@
   "type": "module",
   "private": "true",
   "scripts": {
-    "build": "tsc && node lib/build.js"
+    "build": "tsc && node lib/build/index.js"
   },
   "dependencies": {
     "@babel/core": "^7.27.4",

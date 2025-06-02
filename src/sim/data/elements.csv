@@ -1,0 +1,119 @@
+name,symbol,number,electronConfig
+Hydrogen,H,1,1s1
+Helium,He,2,1s2
+Lithium,Li,3,[He] 2s1
+Beryllium,Be,4,[He] 2s2
+Boron,B,5,[He] 2s2 2p1
+Carbon,C,6,[He] 2s2 2p2
+Nitrogen,N,7,[He] 2s2 2p3
+Oxygen,O,8,[He] 2s2 2p4
+Fluorine,F,9,[He] 2s2 2p5
+Neon,Ne,10,[He] 2s2 2p6
+Sodium,Na,11,[Ne] 3s1
+Magnesium,Mg,12,[Ne] 3s2
+Aluminum,Al,13,[Ne] 3s2 3p1
+Silicon,Si,14,[Ne] 3s2 3p2
+Phosphorus,P,15,[Ne] 3s2 3p3
+Sulfur,S,16,[Ne] 3s2 3p4
+Chlorine,Cl,17,[Ne] 3s2 3p5
+Argon,Ar,18,[Ne] 3s2 3p6
+Potassium,K,19,[Ar] 4s1
+Calcium,Ca,20,[Ar] 4s2
+Scandium,Sc,21,[Ar] 3d1 4s2
+Titanium,Ti,22,[Ar] 3d2 4s2
+Vanadium,V,23,[Ar] 3d3 4s2
+Chromium,Cr,24,[Ar] 3d5 4s1
+Manganese,Mn,25,[Ar] 3d5 4s2
+Iron,Fe,26,[Ar] 3d6 4s2
+Cobalt,Co,27,[Ar] 3d7 4s2
+Nickel,Ni,28,[Ar] 3d8 4s2
+Copper,Cu,29,[Ar] 3d10 4s1
+Zinc,Zn,30,[Ar] 3d10 4s2
+Gallium,Ga,31,[Ar] 3d10 4s2 4p1
+Germanium,Ge,32,[Ar] 3d10 4s2 4p2
+Arsenic,As,33,[Ar] 3d10 4s2 4p3
+Selenium,Se,34,[Ar] 3d10 4s2 4p4
+Bromine,Br,35,[Ar] 3d10 4s2 4p5
+Krypton,Kr,36,[Ar] 3d10 4s2 4p6
+Rubidium,Rb,37,[Kr] 5s1
+Strontium,Sr,38,[Kr] 5s2
+Yttrium,Y,39,[Kr] 4d1 5s2
+Zirconium,Zr,40,[Kr] 4d2 5s2
+Niobium,Nb,41,[Kr] 4d4 5s1
+Molybdenum,Mo,42,[Kr] 4d5 5s1
+Technetium,Tc,43,[Kr] 4d5 5s2
+Ruthenium,Ru,44,[Kr] 4d7 5s1
+Rhodium,Rh,45,[Kr] 4d8 5s1
+Palladium,Pd,46,[Kr] 4d10
+Silver,Ag,47,[Kr] 4d10 5s1
+Cadmium,Cd,48,[Kr] 4d10 5s2
+Indium,In,49,[Kr] 4d10 5s2 5p1
+Tin,Sn,50,[Kr] 4d10 5s2 5p2
+Antimony,Sb,51,[Kr] 4d10 5s2 5p3
+Tellurium,Te,52,[Kr] 4d10 5s2 5p4
+Iodine,I,53,[Kr] 4d10 5s2 5p5
+Xenon,Xe,54,[Kr] 4d10 5s2 5p6
+Cesium,Cs,55,[Xe] 6s1
+Barium,Ba,56,[Xe] 6s2
+Lanthanum,La,57,[Xe] 5d1 6s2
+Cerium,Ce,58,[Xe] 4f1 5d1 6s2
+Praseodymium,Pr,59,[Xe] 4f3 6s2
+Neodymium,Nd,60,[Xe] 4f4 6s2
+Promethium,Pm,61,[Xe] 4f5 6s2
+Samarium,Sm,62,[Xe] 4f6 6s2
+Europium,Eu,63,[Xe] 4f7 6s2
+Gadolinium,Gd,64,[Xe] 4f7 5d1 6s2
+Terbium,Tb,65,[Xe] 4f9 6s2
+Dysprosium,Dy,66,[Xe] 4f10 6s2
+Holmium,Ho,67,[Xe] 4f11 6s2
+Erbium,Er,68,[Xe] 4f12 6s2
+Thulium,Tm,69,[Xe] 4f13 6s2
+Ytterbium,Yb,70,[Xe] 4f14 6s2
+Lutetium,Lu,71,[Xe] 4f14 5d1 6s2
+Hafnium,Hf,72,[Xe] 4f14 5d2 6s2
+Tantalum,Ta,73,[Xe] 4f14 5d3 6s2
+Tungsten,W,74,[Xe] 4f14 5d4 6s2
+Rhenium,Re,75,[Xe] 4f14 5d5 6s2
+Osmium,Os,76,[Xe] 4f14 5d6 6s2
+Iridium,Ir,77,[Xe] 4f14 5d7 6s2
+Platinum,Pt,78,[Xe] 4f14 5d9 6s1
+Gold,Au,79,[Xe] 4f14 5d10 6s1
+Mercury,Hg,80,[Xe] 4f14 5d10 6s2
+Thallium,Tl,81,[Xe] 4f14 5d10 6s2 6p1
+Lead,Pb,82,[Xe] 4f14 5d10 6s2 6p2
+Bismuth,Bi,83,[Xe] 4f14 5d10 6s2 6p3
+Polonium,Po,84,[Xe] 4f14 5d10 6s2 6p4
+Astatine,At,85,[Xe] 4f14 5d10 6s2 6p5
+Radon,Rn,86,[Xe] 4f14 5d10 6s2 6p6
+Francium,Fr,87,[Rn] 7s1
+Radium,Ra,88,[Rn] 7s2
+Actinium,Ac,89,[Rn] 6d1 7s2
+Thorium,Th,90,[Rn] 6d2 7s2
+Protactinium,Pa,91,[Rn] 5f2 6d1 7s2
+Uranium,U,92,[Rn] 5f3 6d1 7s2
+Neptunium,Np,93,[Rn] 5f4 6d1 7s2
+Plutonium,Pu,94,[Rn] 5f6 7s2
+Americium,Am,95,[Rn] 5f7 7s2
+Curium,Cm,96,[Rn] 5f7 6d1 7s2
+Berkelium,Bk,97,[Rn] 5f9 7s2
+Californium,Cf,98,[Rn] 5f10 7s2
+Einsteinium,Es,99,[Rn] 5f11 7s2
+Fermium,Fm,100,[Rn] 5f12 7s2
+Mendelevium,Md,101,[Rn] 5f13 7s2
+Nobelium,No,102,[Rn] 5f14 7s2
+Lawrencium,Lr,103,[Rn] 5f14 7s2 7p1
+Rutherfordium,Rf,104,[Rn] 5f14 6d2 7s2
+Dubnium,Db,105,[Rn] 5f14 6d3 7s2
+Seaborgium,Sg,106,[Rn] 5f14 6d4 7s2
+Bohrium,Bh,107,[Rn] 5f14 6d5 7s2
+Hassium,Hs,108,[Rn] 5f14 6d6 7s2
+Meitnerium,Mt,109,[Rn] 5f14 6d7 7s2
+Darmstadtium,Ds,110,[Rn] 5f14 6d8 7s2
+Roentgenium,Rg,111,[Rn] 5f14 6d9 7s2
+Copernicium,Cn,112,[Rn] 5f14 6d10 7s2
+Nihonium,Nh,113,[Rn] 5f14 6d10 7s2 7p1
+Flerovium,Fl,114,[Rn] 5f14 6d10 7s2 7p2
+Moscovium,Mc,115,[Rn] 5f14 6d10 7s2 7p3
+Livermorium,Lv,116,[Rn] 5f14 6d10 7s2 7p4
+Tennessine,Ts,117,[Rn] 5f14 6d10 7s2 7p5
+Oganesson,Og,118,[Rn] 5f14 6d10 7s2 7p6

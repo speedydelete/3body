@@ -4,7 +4,8 @@
         "outDir": "./lib",
         "target": "ESNext",
         "module": "NodeNext",
-        "strict": true
+        "strict": true,
+        "allowArbitraryExtensions": true
     },
-    "files": ["./src/index.ts", "./src/build.ts", "src/sim/element/gen.ts", "src/sim/element/index.ts"]
+    "files": ["./src/index.ts", "./src/build/index.ts"]
 }
