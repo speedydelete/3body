@@ -1,6 +1,6 @@
 
-import RAW_ELEMENT_DATA from './data/elements.csv';
-import RAW_ISOTOPE_DATA from './data/isotopes.csv';
+import RAW_ELEMENT_DATA from '../../data/elements.csv';
+import RAW_ISOTOPE_DATA from '../../data/isotopes.csv';
 
 
 export type SOrbital = '1s' | '2s' | '3s' | '4s' | '5s' | '6s' | '7s';

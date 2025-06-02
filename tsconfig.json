@@ -7,5 +7,9 @@
         "strict": true,
         "allowArbitraryExtensions": true
     },
-    "files": ["./src/index.ts", "./src/build/index.ts"]
+    "files": [
+        "./src/index.ts",
+        "./src/build/index.ts",
+        "./src/build/text_loader.ts"
+    ]
 }

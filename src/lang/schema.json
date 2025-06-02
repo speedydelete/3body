@@ -1,0 +1,51 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "https://raw.githubusercontent.com/speedydelete/3body/refs/heads/main/src/lang/schema.json",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string",
+            "value": "The name of the language"
+        },
+        "title": {
+            "type": "string",
+            "description": "The HTML title element's value"
+        },
+        "elements": {
+            "type": "array",
+            "description": "Chemical elements",
+            "minItems": 119,
+            "maxItems": 119,
+            "items": {
+                "type": "string"
+            }
+        },
+        "specialIsotopeNames": {
+            "type": "object",
+            "description": "Special names for isotopes (e.g. deuterium)",
+            "patternProperties": {
+                "^\\d+,\\d+$": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
+        "molecules": {
+            "type": "object",
+            "description": "Names of molecules",
+            "additionalProperties": {
+                "type": "string"
+            }
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "name",
+        "title",
+        "elements",
+        "molecules"
+    ]
+}

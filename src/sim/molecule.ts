@@ -1,5 +1,6 @@
 
 import {Element, elements as elementTable} from './element.js';
+import RAW_MOLECULE_DATA from '../../data/molecules.csv';
 
 
 export interface MoleculeProperties {
@@ -61,7 +62,3 @@ export class Molecule {
 
 
 export let molecules = new Map<string, Molecule>();
-
-
-// @ts-ignore
-const RAW_MOLECULE_DATA = (await import('./molecules.csv')).default as string;
